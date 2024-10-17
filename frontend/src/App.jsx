@@ -9,6 +9,7 @@ import ScheduleCollection from "./pages/ScheduleCollection";
 import QRPage from "./pages/QRPage";
 import Report from "./pages/Report";
 import QRCodeGenerator from "./pages/QRCodeGenerator";
+import WasteProduction from "./pages/WasteProduction";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/schedule/collection" element={<ScheduleCollection />} />
         <Route path="/qr/scan" element={<QRPage />} />
         <Route path="/report" element={<Report  />} />
+        <Route path="/production" element={<WasteProduction />} />
         <Route path="/qr/generate" element={<QRCodeGenerator />} />
       </Routes>
       <Footers />

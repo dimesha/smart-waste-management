@@ -107,6 +107,15 @@ export default function Header() {
         </Navbar.Link>
 
         <Navbar.Link
+          active={path === "/production"}
+          as={"div"}
+          style={{ color: path === "/production" ? "#fff" : "#000" }}
+          className="text-lg"
+        >
+          <Link to="/production">PRODUCTION</Link>
+        </Navbar.Link>
+
+        <Navbar.Link
           active={path === "/about"}
           as={"div"}
           style={{ color: path === "/about" ? "#fff" : "#000" }}
