@@ -1,12 +1,8 @@
 // Import Express and create a router instance
 const express = require('express');
 const router = express.Router();
-
-// Import controller functions for handling user-related operations
-const { login, register, getAllUsers } = require('../controllers/user.controller');
-
-// Import middleware to verify the token (user authentication)
-const verifyToken = require('../util/verifyUser');
+const { login, register, getAllUsers } = require('../controllers/user.controller');// Import controller functions for handling user-related operations
+const verifyToken = require('../util/verifyUser');// Import middleware to verify the token (user authentication)
 
 // Route for user login (POST request)
 // Does not require token verification as it is used to authenticate users
