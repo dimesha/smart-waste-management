@@ -14,7 +14,7 @@ export default function WasteProduction() {
   const [error, setError] = useState("");
   const [chartType, setChartType] = useState("bar");
   const [activeWasteType, setActiveWasteType] = useState("organic");
-  const [highWasteAlert, setHighWasteAlert] = useState(false); // State for high waste alert
+  const [highWasteAlert, setHighWasteAlert] = useState(false);
 
 
   useEffect(() => {
