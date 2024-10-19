@@ -33,3 +33,6 @@ const port = process.env.PORT || 5001;
 
 // Start the server and log a message to the console when it is running
 app.listen(port, () => console.log(`Nodemon Server started at port ${port} 🌍`));
+
+
+module.exports =app

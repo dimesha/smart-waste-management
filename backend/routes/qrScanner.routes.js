@@ -1,16 +1,23 @@
 // Import Express and create a router instance
 const express = require('express');
 const router = express.Router();
-
 const verifyUser = require('../util/verifyUser')
 
 
 // Import controller functions for handling QR code operations
-const { createQR, getQR, updateQR, deleteQR, getQRByType, getQrByCollecctor, getMessage ,getAllWaste} = require('../controllers/qrScanner.controller');
+const { 
+    createQR, 
+    getQR, 
+    updateQR, 
+    deleteQR, 
+    getQRByType, 
+    getQrByCollecctor, 
+    getMessage,
+    getAllWaste
+} = require('../controllers/qrScanner.controller');
 
 
 router.get('/get-all-waste', getAllWaste)
-
 
 // Route to create a new QR code (POST request)
 // Uses verifyUser middleware to check if the user is authorized
