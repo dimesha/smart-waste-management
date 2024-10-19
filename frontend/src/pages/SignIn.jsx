@@ -6,15 +6,18 @@ import background from "../assets/background.png";
 import Swal from "sweetalert2";
 
 export default function SignIn() {
+  // State management using the State Pattern
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
 
+  // Controlled Component Pattern: Handle input state
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
 
+  // Handle form submission using the Command Pattern
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
@@ -38,7 +41,7 @@ export default function SignIn() {
         return;
       }
 
-      // Save the token and user data in local storage
+      // Save the token and user data in local storage (using the Singleton Pattern)
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.data));
 

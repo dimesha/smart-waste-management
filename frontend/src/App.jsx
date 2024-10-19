@@ -14,6 +14,7 @@ import WasteProduction from "./pages/WasteProduction";
 export default function App() {
   return (
     <BrowserRouter>
+      {/* Component-based pattern: Using the Header component */}
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -22,10 +23,11 @@ export default function App() {
         <Route path="/sign-in" element={<Signin />} />
         <Route path="/schedule/collection" element={<ScheduleCollection />} />
         <Route path="/qr/scan" element={<QRPage />} />
-        <Route path="/report" element={<Report  />} />
+        <Route path="/report" element={<Report />} />
         <Route path="/production" element={<WasteProduction />} />
         <Route path="/qr/generate" element={<QRCodeGenerator />} />
       </Routes>
+      {/* Component-based pattern: Using the Footer component */}
       <Footers />
     </BrowserRouter>
   );

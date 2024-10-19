@@ -11,10 +11,12 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Controlled Component Pattern: Manage input state
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
 
+  // Handle form submission using Command Pattern
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (

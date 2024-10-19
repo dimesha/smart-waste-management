@@ -6,21 +6,22 @@ import Swal from "sweetalert2";
 
 const QRCodeReader = () => {
   const navigate = useNavigate();
-  const qrRef = useRef(null);
-  const [qrData, setQrData] = useState([]);
+  const qrRef = useRef(null); // Singleton Pattern (Html5QrcodeScanner)
+  const [qrData, setQrData] = useState([]); // Model (MVC pattern)
   const [scannerInitialized, setScannerInitialized] = useState(false);
 
+  // Handle navigation (Command Pattern)
   const handleNavigate = () => {
     navigate("/qr/generate");
   };
 
-  // Handle QR Code detection
+  // Observer Pattern - this function is called when the scanner detects a QR code
   const onScanSuccess = (decodedText) => {
     console.log(`QR Code detected: ${decodedText}`);
 
     const parsedData = JSON.parse(decodedText);
 
-    // Show SweetAlert with form to display QR data and allow submission
+    // Factory Pattern - Using SweetAlert factory to create an alert with custom HTML
     Swal.fire({
       title: "QR Code Detected",
       html: `
@@ -56,7 +57,7 @@ const QRCodeReader = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        sendDataToBackend(result.value);
+        sendDataToBackend(result.value); // Command Pattern - send data to backend
       }
     });
   };
@@ -65,6 +66,7 @@ const QRCodeReader = () => {
     console.error(`QR Scan Error: ${error}`);
   };
 
+  // Command Pattern - sending scanned data to backend
   const sendDataToBackend = async (data) => {
     try {
       const token = localStorage.getItem("token");
@@ -112,12 +114,13 @@ const QRCodeReader = () => {
     }
   };
 
+  // Command Pattern - Fetching QR data
   const fetchQrData = async () => {
     try {
-      const token = localStorage.getItem("token"); 
+      const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5001/api/qr", {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
       });
 
