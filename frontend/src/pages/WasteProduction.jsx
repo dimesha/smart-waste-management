@@ -15,7 +15,14 @@ export default function WasteProduction() {
   const [chartType, setChartType] = useState("bar");
   const [activeWasteType, setActiveWasteType] = useState("organic");
   const [highWasteAlert, setHighWasteAlert] = useState(false);
+  const [totalPayment, setTotalPayment] = useState(100);
 
+  // Sample prices per kg for waste types
+  const prices = {
+    organic: 20, // Price per kg for organic waste
+    dry: 30,     // Price per kg for dry waste
+    wet: 150,   // Price per kg for wet waste
+  };
 
   useEffect(() => {
     const fetchWasteData = async () => {
@@ -25,10 +32,9 @@ export default function WasteProduction() {
         );
         console.log("Fetched data:", response.data);
         setUserWasteData(response.data);
-        // Check for high waste levels
-        // const totalWaste = response.data.reduce((sum, item) => sum + item.weight, 0);
-        if (totalWasteCount >= 100) { // Set threshold for high waste
-          setHighWasteAlert(true); // Trigger alert if above threshold
+        const totalWaste = response.data.reduce((sum, item) => sum + item.weight, 0);
+        if (totalWaste >= 100) {
+          setHighWasteAlert(true);
         }
       } catch (error) {
         console.error("Error fetching waste data:", error);
@@ -36,6 +42,16 @@ export default function WasteProduction() {
     };
     fetchWasteData();
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (token && user) {
+      setCurrentUser(user);
+    }
+  }, []);
+
   const organicWaste = userWasteData.filter(
     (item) =>
       currentUser &&
@@ -65,15 +81,6 @@ export default function WasteProduction() {
   );
 
   const totalWasteCount = totalOrganicWeight + totalDryWeight + totalWetWeight;
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    if (token && user) {
-      setCurrentUser(user);
-    }
-  }, []);
 
   const calculateWasteBreakdown = () => {
     const breakdown = { organic: 0, dry: 0, wet: 0 };
@@ -116,6 +123,44 @@ export default function WasteProduction() {
     }
     setChartType(type);
   };
+
+  const calculateTotalPayment = () => {
+    const organicWeight = wasteBreakdown.organic;
+    const dryWeight = wasteBreakdown.dry;
+    const wetWeight = wasteBreakdown.wet;
+
+    const total = (organicWeight * prices.organic) + 
+                  (dryWeight * prices.dry) + 
+                  (wetWeight * prices.wet);
+    setTotalPayment(total);
+  };
+
+  const handlePayment = () => {
+    const message = `Total Bill: Rs.${totalPayment.toFixed(2)}\nAre you sure you want to proceed with the payment?`;
+    
+    Swal.fire({
+      title: "Payment Confirmation",
+      text: message,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, pay now!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Payment Successful!", `Your payment of Rs. ${totalPayment.toFixed(2)} has been processed.`, "success");
+        setTotalPayment(0); // Reset payment after successful transaction
+      }
+    });
+  };
+
+  const handleCheckWasteLevels = () => {
+    if (userWasteData.length === 0) {
+      Swal.fire("No waste data available!", "Please try again later.", "info");
+    } else {
+      Swal.fire("Current Waste Production", `Total Waste: ${totalWasteCount} kg`, "info");
+    }
+  };
+
   const chartData = {
     labels: ["Organic", "Dry", "Wet"],
     datasets: [
@@ -127,17 +172,6 @@ export default function WasteProduction() {
     ],
   };
 
-  const handleCheckWasteLevels = () => {
-    // This function is called when the user wants to check waste levels
-    if (userWasteData.length === 0) {
-      Swal.fire("No waste data available!", "Please try again later.", "info");
-    } else {
-      // Display current waste levels
-    //   const totalWaste = userWasteData.reduce((sum, item) => sum + item.weight, 0);
-      Swal.fire("Current Waste Production", `Total Waste: ${totalWasteCount} kg`, "info");
-    }
-  };
-
   return (
     <div
       className="flex lg:flex-row flex-col justify-between gap-8 p-8 min-h-screen bg-cover bg-center"
@@ -145,8 +179,9 @@ export default function WasteProduction() {
     >
       <div className="w-full lg:w-1/2 flex flex-col items-center glassmorphism rounded-lg shadow-lg bg-white/30 backdrop-filter backdrop-blur-lg border border-white/20 p-7 lg:h-2/3">
         <h2 className="text-2xl font-bold mb-5">Monitor Waste Production</h2>
-         {/* Button to check waste levels */}
-         <Button onClick={handleCheckWasteLevels} className="mb-5" gradientDuoTone="greenToBlue">
+        
+        {/* Button to check waste levels */}
+        <Button onClick={handleCheckWasteLevels} className="mb-5" gradientDuoTone="greenToBlue">
           Check My Waste Levels
         </Button>
 
@@ -156,6 +191,7 @@ export default function WasteProduction() {
             <p>Your waste production levels are high. Please check your waste levels!</p>
           </div>
         )}
+
         <form className="w-full" onSubmit={handleSubmit}>
           <div className="mb-5">
             <Label htmlFor="selectedDate">Select Date Range:</Label>
@@ -219,7 +255,6 @@ export default function WasteProduction() {
               Wet Waste
             </button>
           </div>
-
           {activeWasteType === "organic" && (
             <div>
               <h4 className="text-xl font-bold mb-2">Organic Waste</h4>
@@ -291,6 +326,23 @@ export default function WasteProduction() {
               ))}
             </div>
           )}
+          </div>
+
+
+        {/* Payment Section */}
+        <div className="mt-5 w-full">
+          <h3 className="text-lg font-bold">Payment Section</h3>
+          <Button
+            onClick={() => {
+              calculateTotalPayment(); // Calculate total before showing the payment popup
+              handlePayment();
+            }}
+            gradientDuoTone="greenToBlue"
+            className="mt-4"
+          >
+            Make Payment
+          </Button>
+          <p className="mt-2 text-blue-100 font-semibold text-xl">Total Payment: Rs. {totalPayment.toFixed(2)}</p>
         </div>
       </div>
 
