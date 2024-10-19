@@ -157,7 +157,7 @@ const QRCodeReader = () => {
           id="qr-reader"
           ref={qrRef}
           className="border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center align-middle justify-center bg-white"
-          style={{ width: "100%", height: "250px" }}
+          style={{ width: "100%", height: "auto" }}
         >
           {/* Show fallback image when scanner is not active */}
           {!scannerInitialized && (
